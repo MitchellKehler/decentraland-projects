@@ -246,5 +246,5 @@ engine.addSystem(new UpdatePetTethers)
 
 CreateBat(new Vector3(8, 0, 8))
 
-const spider = CreateSpider(new Vector3(8, 0, 8))
-spider.addComponent(new Pet)
+const myPet = CreateSpider(new Vector3(8, 0, 8))
+myPet.addComponent(new Pet)
