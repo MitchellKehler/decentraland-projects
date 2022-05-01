@@ -41,51 +41,42 @@ const critters = engine.getComponentGroup(Critter)
  //Create Creature Functions
 
 function CreateCritter() {
-
+    const critter = new Entity()
+    critter.addComponent(new Critter())
+    critter.addComponent(new LerpData())
+    critter.addComponent(new Animator())
+    critter.getComponent(Animator).addClip(new AnimationState('Idle'))
+    critter.getComponent(Animator).getClip('Idle').play()
+    critter.getComponent(Animator).addClip(new AnimationState('MoveInPlaceFast'))
+    critter.getComponent(Animator).addClip(new AnimationState('CastSpell'))
+    critter.getComponent(Animator).getClip('CastSpell').looping = false
+    return critter
 }
 
 function CreateBat(spawnPoint: Vector3) {
-    const bat = new Entity()
+    const bat = CreateCritter()
     bat.addComponent(new GLTFShape('models/pets/Bat.glb'))
-    bat.addComponent(new Critter())
     bat.getComponent(Critter).tetherPoint = spawnPoint
+    bat.getComponent(Critter).energy = .7
+    bat.getComponent(Critter).curiosity = 5
     bat.getComponent(Critter).yOffset = 1
     bat.getComponent(Critter).idleAnimationDuration = 1
-
     bat.addComponent(new Transform({
         position: new Vector3(bat.getComponent(Critter).tetherPoint.x, bat.getComponent(Critter).tetherPoint.y + bat.getComponent(Critter).yOffset, bat.getComponent(Critter).tetherPoint.z)
     }))
-
-    bat.addComponent(new LerpData())
     bat.getComponent(LerpData).target = bat.getComponent(Transform).position
-    bat.addComponent(new Animator())
-    bat.getComponent(Animator).addClip(new AnimationState('Idle'))
-    bat.getComponent(Animator).getClip('Idle').play()
-    bat.getComponent(Animator).addClip(new AnimationState('MoveInPlaceFast'))
-    bat.getComponent(Animator).addClip(new AnimationState('CastSpell'))
-    bat.getComponent(Animator).getClip('CastSpell').looping = false
     engine.addEntity(bat)
 }
 
 function CreateSpider(spawnPoint: Vector3) {
-    const spider = new Entity()
+    const spider = CreateCritter()
     spider.addComponent(new GLTFShape('models/pets/Spider/Spider.gltf'))
-    spider.addComponent(new Critter())
     spider.getComponent(Critter).tetherPoint = spawnPoint
     spider.getComponent(Critter).idleAnimationDuration = 1.2
-
     spider.addComponent(new Transform({
         position: new Vector3(spider.getComponent(Critter).tetherPoint.x, spider.getComponent(Critter).tetherPoint.y + spider.getComponent(Critter).yOffset, spider.getComponent(Critter).tetherPoint.z)
     }))
-
-    spider.addComponent(new LerpData())
     spider.getComponent(LerpData).target = spider.getComponent(Transform).position
-    spider.addComponent(new Animator())
-    spider.getComponent(Animator).addClip(new AnimationState('Idle'))
-    spider.getComponent(Animator).getClip('Idle').play()
-    spider.getComponent(Animator).addClip(new AnimationState('MoveInPlaceFast'))
-    spider.getComponent(Animator).addClip(new AnimationState('CastSpell'))
-    spider.getComponent(Animator).getClip('CastSpell').looping = false
     engine.addEntity(spider)
 }
 
@@ -147,43 +138,48 @@ export class CrittersMove {
 engine.addSystem(new CrittersMove)
 
 function chooseNextCritterAction(critter: IEntity) {
-    let path = critter.getComponent(LerpData)
     let critterData = critter.getComponent(Critter)
-    let transform = critter.getComponent(Transform)
     if (Math.random() > critterData.energy) {
         critter.getComponent(Animator).getClip('Idle').play(true)
         critter.addComponent(new TimeOut(1.5))
     } else {
-        if (Math.random() > .5) {
+        if (Math.random() > critterData.energy) {
             critter.getComponent(Animator).getClip('CastSpell').play(true)
             critter.addComponent(new TimeOut(critterData.idleAnimationDuration))
         } else {
-            path.origin = path.target
-            let Y = 0
-            if (critterData.yOffset != 0) {
-                Y = ((Math.random() * (critterData.curiosity)) - (critterData.curiosity / 2) + critterData.tetherPoint.y + critterData.yOffset) // this will make more sence once there are pets following players who might be elevated.
-                if (Y < .5) {
-                    Y = .5
-                }
-            }
-            path.target = new Vector3(((Math.random() * (critterData.curiosity * 2)) - critterData.curiosity + critterData.tetherPoint.x), Y, ((Math.random() * (critterData.curiosity * 2)) - critterData.curiosity + critterData.tetherPoint.z))
-            // It's slower when it is going to a point close to it's current position. We need to subtract the current position or something
-            let X = 1
-            let Z = 1
-            if (path.target.x >= 1) {
-                let X = Math.abs(path.target.x - path.origin.x)
-            }
-            if (path.target.z >= 1) {
-                let Z = Math.abs(path.target.z - path.origin.z)
-            }
-            path.fractionDivider = Math.floor((X + Z) * 1.5) // higher is slower
-            path.fraction = 0
-            transform.lookAt(path.target)
-            transform.rotate(new Vector3(0, 1, 0), 180)
-            critterData.moving = true
-            critter.getComponent(Animator).getClip('MoveInPlaceFast').play(true)
+            PickNextPath(critter)
         }
     }
+}
+
+function PickNextPath(critter: IEntity) {
+    let path = critter.getComponent(LerpData)
+    let critterData = critter.getComponent(Critter)
+    let transform = critter.getComponent(Transform)
+    path.origin = path.target
+    let Y = 0
+    if (critterData.yOffset != 0) {
+        Y = ((Math.random() * (critterData.curiosity)) - (critterData.curiosity / 2) + critterData.tetherPoint.y + critterData.yOffset) // this will make more sence once there are pets following players who might be elevated.
+        if (Y < .5) {
+            Y = .5
+        }
+    }
+    path.target = new Vector3(((Math.random() * (critterData.curiosity * 2)) - critterData.curiosity + critterData.tetherPoint.x), Y, ((Math.random() * (critterData.curiosity * 2)) - critterData.curiosity + critterData.tetherPoint.z))
+    let X = 1
+    let Z = 1
+    if (path.target.x >= 1) {
+        let X = Math.abs(path.target.x - path.origin.x)
+    }
+    if (path.target.z >= 1) {
+        let Z = Math.abs(path.target.z - path.origin.z)
+    }
+    path.fractionDivider = Math.floor((X + Z) * 1.5) // higher is slower
+    path.fraction = 0
+    transform.lookAt(path.target)
+    transform.rotate(new Vector3(0, 1, 0), 180)
+    critterData.moving = true
+    critter.getComponent(Animator).getClip('MoveInPlaceFast').play(true)
+
 }
 
 CreateBat(new Vector3(8, 0, 8))
