@@ -12,8 +12,6 @@
  * Handle storing pet data and putting the pet back into the scene when the player arrives if they already had a pet.
 */
 
-//log("this is how you log")
-
 // Lerp data component is used to determine critter movments
 @Component('lerpData')
 export class LerpData {
@@ -54,7 +52,7 @@ const pets = engine.getComponentGroup(Pet)
 
 // Create an entity and add all the generic components then pass it back.
 function CreateCritter() {
-    const critter = new Entity()
+    var critter = new Entity()
     critter.addComponent(new Critter())
     critter.addComponent(new LerpData())
     critter.addComponent(new Animator())
@@ -68,36 +66,150 @@ function CreateCritter() {
 
 // Create a Bat
 function CreateBat(spawnPoint: Vector3) {
-    const bat = CreateCritter()
-    bat.addComponent(new GLTFShape('models/pets/Bat.glb'))
-    bat.getComponent(Critter).tetherPoint = spawnPoint
-    bat.getComponent(Critter).energy = .7
-    bat.getComponent(Critter).curiosity = 5
-    bat.getComponent(Critter).yOffset = 1
-    bat.getComponent(Critter).idleAnimationDuration = 1
-    bat.addComponent(new Transform({
-        position: new Vector3(bat.getComponent(Critter).tetherPoint.x, bat.getComponent(Critter).tetherPoint.y + bat.getComponent(Critter).yOffset, bat.getComponent(Critter).tetherPoint.z)
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Bat.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .8
+    critter.getComponent(Critter).curiosity = 4
+    critter.getComponent(Critter).yOffset = 1
+    critter.getComponent(Critter).idleAnimationDuration = 1
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
     }))
-    bat.getComponent(LerpData).target = bat.getComponent(Transform).position
-    engine.addEntity(bat)
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
 
-    return bat
+    return critter
 }
+const playerBat = CreateBat(new Vector3(0, 0, 0))
+playerBat.addComponent(new Pet)
 
 // Create a Spider
 function CreateSpider(spawnPoint: Vector3) {
-    const spider = CreateCritter()
-    spider.addComponent(new GLTFShape('models/pets/Spider/Spider.gltf'))
-    spider.getComponent(Critter).tetherPoint = spawnPoint
-    spider.getComponent(Critter).idleAnimationDuration = 1.2
-    spider.addComponent(new Transform({
-        position: new Vector3(spider.getComponent(Critter).tetherPoint.x, spider.getComponent(Critter).tetherPoint.y + spider.getComponent(Critter).yOffset, spider.getComponent(Critter).tetherPoint.z)
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Spider.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .4
+    critter.getComponent(Critter).curiosity = 3
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
     }))
-    spider.getComponent(LerpData).target = spider.getComponent(Transform).position
-    engine.addEntity(spider)
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
 
-    return spider
+    return critter
 }
+const playerSpider = CreateSpider(new Vector3(0, 0, 0))
+playerSpider.addComponent(new Pet)
+
+// Create a Egglet
+function CreateEgglet(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Egglet.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .3
+    critter.getComponent(Critter).curiosity = 3
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerEgglet = CreateEgglet(new Vector3(0, 0, 0))
+playerEgglet.addComponent(new Pet)
+
+// Create a Chick
+function CreateChick(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Chick.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .3
+    critter.getComponent(Critter).curiosity = 2
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerChick = CreateChick(new Vector3(0, 0, 0))
+playerChick.addComponent(new Pet)
+
+// Create a Bee
+function CreateBee(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Bee.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).yOffset = .6
+    critter.getComponent(Critter).energy = .7
+    critter.getComponent(Critter).curiosity = 6
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerBee = CreateBee(new Vector3(0, 0, 0))
+playerBee.addComponent(new Pet)
+
+// Create a Ghost
+function CreateGhost(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Ghost.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).yOffset = 1.2
+    critter.getComponent(Critter).energy = .5
+    critter.getComponent(Critter).curiosity = 5
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerGhost = CreateGhost(new Vector3(0, 0, 0))
+playerGhost.addComponent(new Pet)
+
+// Create a Seed
+function CreateSeed(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Seed.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .2
+    critter.getComponent(Critter).curiosity = 2
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerSeed = CreateSeed(new Vector3(0, 0, 0))
+playerSeed.addComponent(new Pet)
+
+// Create a Mushroom
+function CreateMushroom(spawnPoint: Vector3) {
+    var critter = CreateCritter()
+    critter.addComponent(new GLTFShape('models/pets/Mushroom.glb'))
+    critter.getComponent(Critter).tetherPoint = spawnPoint
+    critter.getComponent(Critter).energy = .1
+    critter.getComponent(Critter).curiosity = 2
+    critter.getComponent(Critter).idleAnimationDuration = 1.2
+    critter.addComponent(new Transform({
+        position: new Vector3(critter.getComponent(Critter).tetherPoint.x, critter.getComponent(Critter).tetherPoint.y + critter.getComponent(Critter).yOffset, critter.getComponent(Critter).tetherPoint.z)
+    }))
+    critter.getComponent(LerpData).target = critter.getComponent(Transform).position
+
+    return critter
+}
+const playerMushroom = CreateMushroom(new Vector3(0, 0, 0))
+playerMushroom.addComponent(new Pet)
 
 // Add Wait System
 
@@ -148,7 +260,8 @@ export class CrittersMove {
                 } else {
                     // Reached destination, reset values and request critter's next action
                     path.fraction = 0
-                    path.origin = path.target
+                   path.origin = path.target
+                   transform.rotation.setEuler(transform.rotation.eulerAngles.x, 0, transform.rotation.eulerAngles.z)
                     critter.getComponent(Animator).getClip('MoveInPlaceFast').pause()
                     critter.getComponent(Animator).getClip('MoveInPlaceFast').speed = 1
                     critterData.moving = false
@@ -243,8 +356,39 @@ export class UpdatePetTethers {
 
 engine.addSystem(new UpdatePetTethers)
 
+engine.addEntity(CreateBat(new Vector3(8, 0, 8)))
+engine.addEntity(CreateSeed(new Vector3(26, 0, 5)))
+engine.addEntity(CreateMushroom(new Vector3(24, 0, 24)))
+engine.addEntity(CreateGhost(new Vector3(6, 0, 6)))
+engine.addEntity(CreateChick(new Vector3(16, 0, 16)))
+engine.addEntity(CreateBee(new Vector3(24, 0, 6)))
+engine.addEntity(CreateEgglet(new Vector3(6, 0, 24)))
+engine.addEntity(CreateSpider(new Vector3(8, 0, 8)))
 
-CreateBat(new Vector3(8, 0, 8))
 
-const myPet = CreateSpider(new Vector3(8, 0, 8))
-myPet.addComponent(new Pet)
+var playerPet
+export function SetPlayerPet(petType: string) {
+    if (playerPet != null) {
+        engine.removeEntity(playerPet)
+    }
+
+    if (petType === 'spider') {
+        playerPet = playerSpider
+    } else if (petType === 'egglet') {
+        playerPet = playerEgglet
+    } else if (petType === 'chick') {
+        playerPet = playerChick
+    } else if (petType === 'bee') {
+        playerPet = playerBee
+    } else if (petType === 'ghost') {
+        playerPet = playerGhost
+    } else if (petType === 'mushroom') {
+        playerPet = playerMushroom
+    } else if (petType === 'seed') {
+        playerPet = playerSeed
+    } else {
+        playerPet = playerBat
+    }
+    playerPet.getComponent(Transform).position = new Vector3(Camera.instance.feetPosition.x, Camera.instance.feetPosition.y + playerPet.getComponent(Critter).yOffset, Camera.instance.feetPosition.z)
+    engine.addEntity(playerPet)
+}

@@ -2,6 +2,8 @@ import { createChannel } from '../node_modules/decentraland-builder-scripts/chan
 import { createInventory } from '../node_modules/decentraland-builder-scripts/inventory'
 import Script1 from "../a491051c-8092-4245-ae85-d274e90d8443/src/item"
 
+import { petStoreCanvas } from 'ui'
+
 const _scene = new Entity('_scene')
 engine.addEntity(_scene)
 const transform = new Transform({
@@ -148,6 +150,11 @@ gltfShape7.withCollisions = true
 gltfShape7.isPointerBlocker = true
 gltfShape7.visible = true
 fairKiosk.addComponentOrReplace(gltfShape7)
+fairKiosk.addComponent(
+    new OnClick(e => {
+        log("Shop was Clicked")
+        petStoreCanvas.visible = true
+    }))
 
 const indicatorArrowGree = new Entity('indicatorArrowGree')
 engine.addEntity(indicatorArrowGree)
